@@ -28,11 +28,16 @@ Add hooks if you want the configured artifacts to be installed or deployed.
 Configuring what packages are built, deployed, and installed.
 
 ```clojure
- :package {:autobuild true ;; Will automatically build the artifact if it does not exist.
-           :reuse false ;; If true, will use an existing artifact if available, else will build it if autobuild is true.
+ :package {:skipjar false ;; If true, will not make a jar.  Defaults to false.
+           :autobuild false ;; If true, will automatically build the artifact if it 
+                            ;; does not exist.  Defaults to false.
+           :reuse false ;; If true, will use an existing artifact if available.  
+                        ;; Defaults to false.
            :artifacts [ ;; Collection of artifacts to build/package/install/deploy
-             {:build "war" ;; Lein command used to build the artifact. e.g ring war, ring uberwar, war, assemble
-              :extension "war" ;; The extension/suffix that the artifact file can be identified by. (:todo regex)}]}
+             {:build "war" ;; Lein command used to build the artifact. e.g ring war, 
+                           ;; ring uberwar, war, assemble
+              :extension "war" ;; The extension/suffix that the artifact file can be 
+                               ;; identified by. (:todo regex)}]}
 ```
  
 ### Build/Package

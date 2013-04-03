@@ -15,7 +15,7 @@ The defacto artifact that is built, installed, and deployed by leiningen is a JA
 To use add the plugin to your project.
 
 ```clojure
-  :plugins [[lein-package "0.1.0"]]
+  :plugins [[lein-package "0.1.1"]]
 ```
 
 Add hooks if you want the configured artifacts to be installed or deployed.

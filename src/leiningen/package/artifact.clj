@@ -80,12 +80,21 @@
         artifacts (artifacts project)]
     (filter #(cond
                (exists? project %) %
-               (or autobuild (:autobuild %)) (or (build-artifact project %) true)
-               :else false) artifacts)))
+               (or autobuild (:autobuild %)) (or (build-artifact project %)
+                                                 true)
+               :else false)
+            artifacts)))
 
 (defn coordinates
-  ([project] [(symbol (:group project) (:name project)) (:version project)])
+  ([project]
+     [(symbol (:group project) (:name project)) (:version project)])
   ([project artifact & [suffix]]
-    (let [extension (str (:extension artifact) suffix)
-          classifier (if (:classifier artifact) [:classifier (:classifier artifact)])]
-    (vec (concat [(symbol (:group project) (:name project)) (:version project) :extension extension] classifier)))))
+     (let [extension (str (:extension artifact) suffix)
+           classifier (if (:classifier artifact)
+                        [:classifier (:classifier artifact)])]
+       (vec
+        (concat
+         [(symbol (:group project) (:name project))
+          (:version project)
+          :extension extension]
+         classifier)))))

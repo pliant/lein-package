@@ -61,6 +61,7 @@
 
 (defn build-artifact
   [project artifact]
+  (main/debug "Building" (select-keys artifact [:extension :classifier]))
   (let [raw-args (twine/split (:build artifact) #"\s+")
         task-name (first raw-args)
         args (next raw-args)]

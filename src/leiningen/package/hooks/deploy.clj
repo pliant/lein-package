@@ -17,7 +17,7 @@
     (if artifacts
       (do
         (package/clean project)
-        (let [jar-file (artifact/make-jar project)
+        (let [jar-file (val (first (artifact/make-jar project)))
               pom-file (pom/pom project)
               jar-coord (artifact/coordinates project artifact/jar)
               pom-coord (artifact/coordinates project artifact/pom)

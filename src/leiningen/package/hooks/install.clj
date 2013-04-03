@@ -14,7 +14,7 @@
     (if artifacts
       (do
         (package/clean project)
-        (let [jar-file (artifact/make-jar project)
+        (let [jar-file (val (first (artifact/make-jar project)))
               pom-file (pom/pom project)
               jar-coord (artifact/coordinates project)
               pom-coord (artifact/coordinates project artifact/pom)
@@ -25,11 +25,11 @@
                            {jar-coord jar-file pom-coord pom-file} 
                            {pom-coord pom-file})
               built-artifacts (artifact/built-artifacts project)
-              arts (concat base-coords 
-                           (for [artifact built-artifacts] (artifact/coordinates project artifact)))
-              files (into base-files 
-                          (for [artifact built-artifacts] [(artifact/coordinates project artifact) (artifact/file-path project artifact)]))]
-          (aether/install-artifacts :artifacts arts :files files)))
+              files (into base-files
+                          (for [artifact built-artifacts]
+                            [(artifact/coordinates project artifact)
+                             (artifact/file-path project artifact)]))]
+          (aether/install-artifacts :files files)))
       (f project))))
 
 (defn activate []

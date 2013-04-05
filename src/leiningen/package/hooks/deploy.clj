@@ -31,20 +31,23 @@
                               [(artifact/coordinates project artifact)
                                (artifact/file-path project artifact)]))
 
+              sig-opts (when (sign? project repo)
+                         (leiningen.deploy/signing-opts project repo))
               base-signed (if (sign? project repo)
                             (if jar-file
                               {(artifact/coordinates project artifact/pom ".asc")
-                               (leiningen.deploy/sign pom-file)
+                               (leiningen.deploy/sign pom-file sig-opts)
                                (artifact/coordinates project artifact/jar ".asc")
-                               (leiningen.deploy/sign jar-file)}
+                               (leiningen.deploy/sign jar-file sig-opts)}
                               {(artifact/coordinates project artifact/pom ".asc")
-                               (leiningen.deploy/sign pom-file)}))
+                               (leiningen.deploy/sign pom-file sig-opts)}))
               signed (if base-signed
                        (into base-signed
                              (for [artifact built-artifacts]
                                [(artifact/coordinates project artifact ".asc")
                                 (leiningen.deploy/sign
-                                 (artifact/file-path project artifact))])))]
+                                 (artifact/file-path project artifact)
+                                 sig-opts)])))]
           (merge entries signed)))
       (f project repo))))
 

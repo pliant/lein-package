@@ -1,13 +1,20 @@
 # About
 
-Provides the ability to package, install, and deploy artifacts other than JARs.
+Provides the ability to generalize the packaging of generated artifacts beyond the standard JAR and plugin artifact command, as well as allowing the packaging to hook into the install and deploy lifecycles.
 
 ## Why lein-package
 
-The defacto artifact that is built, installed, and deployed by leiningen is a JARs.  While this satifies the use case of building a library, building anything more sophisticated with leiningen requires external deployment or installation scripts.  lein-package looks to satisfy the use cases that require multiple artifacts including or excluding JARs, such as:
+The de facto artifact which is built, installed, and deployed by leiningen is a JAR using the ``lein jar`` command.  Building anything more sophisticated with leiningen requires external plugins that impose their own plugin-specific commands to generate their artifacts.  Additionally, the leiningen installation and deployment lifecycles are keyed off of JAR artifacts, leaving non-JAR artifacts to be dealt with in a custom manner.  Managing the build and deployment of a project that is a single module is simple enough, but complexities arise when you have a project with multiple modules, each with it's own packaging requirements for it's artifacts.  For examle:
 
-+ Building and archive a WAR project.
-+ Building and archive a library along with an additional ZIP archive with external configuration templates (such as properties files that are deployed outside of a WAR on the classpath).
+```
+myproject
+  \- subproject-client-jar
+  \- subproject-app1-war
+  \- subproject-app2-war
+  \- subproject-services-war
+```
+
+From a packaging and deploy perspective, the same command should be used across all subprojects to 'package' the artifacts, allowing each subproject make the appropriate jar, war, or whatever.  lein-package looks to satisfy the use cases that require multiple artifact generation and managment, including or excluding JARs.
 
 ## Usage
 

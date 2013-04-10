@@ -8,13 +8,15 @@
             [leiningen.pom :as pom]
             [cemerick.pomegranate.aether :as aether]))
 
+(defn- val* [e] (if e (val e)))
+
 (defn install
   [f project]
   (let [artifacts (artifact/artifacts project)]
     (if artifacts
       (do
         (package/clean project)
-        (let [jar-file (val (first (artifact/make-jar project)))
+        (let [jar-file (val* (first (artifact/make-jar project)))
               pom-file (pom/pom project)
               jar-coord (artifact/coordinates project)
               pom-coord (artifact/coordinates project artifact/pom)

@@ -11,13 +11,15 @@
   (and (:sign-releases (second repo) true)
        (not (.endsWith ^String (:version project) "-SNAPSHOT"))))
 
+(defn- val* [e] (if e (val e)))
+
 (defn deploy-files-for
   [f project repo]
   (let [artifacts (artifact/artifacts project)]
     (if artifacts
       (do
         (package/clean project)
-        (let [jar-file (val (first (artifact/make-jar project)))
+        (let [jar-file (val* (first (artifact/make-jar project)))
               pom-file (pom/pom project)
               jar-coord (artifact/coordinates project artifact/jar)
               pom-coord (artifact/coordinates project artifact/pom)

@@ -14,18 +14,10 @@
     (if artifacts
       (do
         (package/clean project)
-        (let [jar-file (val (first (artifact/make-jar project)))
-              pom-file (pom/pom project)
-              jar-coord (artifact/coordinates project)
-              pom-coord (artifact/coordinates project artifact/pom)
-              base-coords (if jar-file
-                            [jar-coord pom-coord]
-                            [pom-coord])
-              base-files (if jar-file
-                           {jar-coord jar-file pom-coord pom-file}
-                           {pom-coord pom-file})
+        (let [base-mappings (artifact/mappings project)
+              base-entries (artifact/mappings->entries base-mappings)
               built-artifacts (artifact/built-artifacts project)
-              files (into base-files
+              files (into base-entries
                           (for [artifact built-artifacts]
                             [(artifact/coordinates project artifact)
                              (artifact/file-path project artifact)]))]

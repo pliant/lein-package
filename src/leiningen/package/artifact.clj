@@ -3,7 +3,8 @@
   (:require [clojure.java.io :as io]
             [clojure.string :as twine]
             [leiningen.core.main :as main]
-            [leiningen.jar :as jar]))
+            [leiningen.jar :as jar]
+            [leiningen.pom :as pom]))
 
 (def jar {:extension "jar" :build "jar"})
 (def pom {:extension "pom" })
@@ -98,3 +99,18 @@
           (:version project)
           :extension extension]
          classifier)))))
+
+(defn mappings
+  [project] 
+  (let [pom-file (pom/pom project)
+        pom-coord (coordinates project pom)
+        pom-entry {:artifact pom :coordinate pom-coord :file pom-file}]
+    (if (make-jar? project)
+      (let [jar-files (make-jar project)
+            jar-entries (map (fn [[k v]] {:artifact k :coordinate (coordinates project k) :file v}) jar-files)]
+        (conj jar-entries pom-entry))
+      (list pom-entry))))
+
+(defn mappings->entries
+  [coll]
+  (into {} (map (fn [m] [(:coordinate m) (:file m)]) coll)))

@@ -1,46 +1,30 @@
 (ns leiningen.package.hooks.deploy
   "Allows for the restriction or addition of files that are deployed to the remote repository."
-  (:require [leiningen.deploy]
+  (:require [leiningen.deploy :as deploy]
             [leiningen.package :as package]
             [leiningen.package.artifact :as artifact]
             [leiningen.pom :as pom]
             [robert.hooke]))
 
-(defn sign?
-  [project repo]
-  (and (:sign-releases (second repo) true)
-       (not (.endsWith ^String (:version project) "-SNAPSHOT"))))
-
 (defn deploy-files-for
   [f project repo]
-  (let [artifacts (artifact/artifacts project)]
+  (let [sign? (deploy/sign-for-repo? repo)
+        artifacts (artifact/artifacts project)]
     (if artifacts
       (do
         (package/clean project)
-        (let [jar-file (val (first (artifact/make-jar project)))
-              pom-file (pom/pom project)
-              jar-coord (artifact/coordinates project artifact/jar)
-              pom-coord (artifact/coordinates project artifact/pom)
+        (let [base-mappings (artifact/mappings project)
+              base-entries (artifact/mappings->entries base-mappings)
               built-artifacts (artifact/built-artifacts project)
-
-              base-entries (if jar-file
-                             {pom-coord pom-file jar-coord jar-file}
-                             {pom-coord pom-file})
               entries (into base-entries
                             (for [artifact built-artifacts]
                               [(artifact/coordinates project artifact)
                                (artifact/file-path project artifact)]))
-
-              sig-opts (when (sign? project repo)
-                         (leiningen.deploy/signing-opts project repo))
-              base-signed (if (sign? project repo)
-                            (if jar-file
-                              {(artifact/coordinates project artifact/pom ".asc")
-                               (leiningen.deploy/sign pom-file sig-opts)
-                               (artifact/coordinates project artifact/jar ".asc")
-                               (leiningen.deploy/sign jar-file sig-opts)}
-                              {(artifact/coordinates project artifact/pom ".asc")
-                               (leiningen.deploy/sign pom-file sig-opts)}))
+              
+              sig-opts (when sign? (deploy/signing-opts project repo))
+              base-signed (if sign?
+                            (into {} (map (fn [m] [(artifact/coordinates project (:artifact m) ".asc")
+                                                   (leiningen.deploy/sign (:file m) sig-opts)]) base-mappings)))
               signed (if base-signed
                        (into base-signed
                              (for [artifact built-artifacts]

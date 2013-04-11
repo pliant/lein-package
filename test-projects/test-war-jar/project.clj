@@ -1,4 +1,4 @@
-(defproject lein-package/test-war-jar "2.0.0-SNAPSHOT"
+(defproject lein-package/test-war-jar "2.0.0"
   :description "This project test the usage of the package command when generating a JAR and a WAR with the lein-ring plugin.
     To test, perform the following:
 
@@ -12,7 +12,7 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.4.0"]]
 
-  :plugins [[lein-package "2.0.0-SNAPSHOT"]
+  :plugins [[lein-package "2.0.0"]
             [lein-ring "0.8.3"]]
 
   :hooks [leiningen.package.hooks.deploy

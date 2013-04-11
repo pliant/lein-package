@@ -38,9 +38,7 @@
     (if raw-artifacts
       (let [configured (for [entry raw-artifacts] (artifactify entry))
             pomjar #{"pom" "jar"}]
-        (filter
-         #(or (:classifier %) (not (pomjar (:extension %))))
-         configured)))))
+        (filter #(or (not (:classifier %)) (not (pomjar (:extension %)))) configured)))))
 
 (defn make-jar?
   [project]
@@ -61,7 +59,6 @@
 
 (defn build-artifact
   [project artifact]
-  (main/debug "Building" (select-keys artifact [:extension :classifier]))
   (let [raw-args (twine/split (:build artifact) #"\s+")
         task-name (first raw-args)
         args (next raw-args)]
@@ -80,21 +77,12 @@
         artifacts (artifacts project)]
     (filter #(cond
                (exists? project %) %
-               (or autobuild (:autobuild %)) (or (build-artifact project %)
-                                                 true)
-               :else false)
-            artifacts)))
+               (or autobuild (:autobuild %)) (or (build-artifact project %) true)
+               :else false) artifacts)))
 
 (defn coordinates
-  ([project]
-     [(symbol (:group project) (:name project)) (:version project)])
+  ([project] [(symbol (:group project) (:name project)) (:version project)])
   ([project artifact & [suffix]]
-     (let [extension (str (:extension artifact) suffix)
-           classifier (if (:classifier artifact)
-                        [:classifier (:classifier artifact)])]
-       (vec
-        (concat
-         [(symbol (:group project) (:name project))
-          (:version project)
-          :extension extension]
-         classifier)))))
+    (let [extension (str (:extension artifact) suffix)
+          classifier (if (:classifier artifact) [:classifier (:classifier artifact)])]
+    (vec (concat [(symbol (:group project) (:name project)) (:version project) :extension extension] classifier)))))

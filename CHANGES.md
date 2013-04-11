@@ -1,3 +1,15 @@
+From 0.1.1 to 0.1.2
+====
+0.1.2 is the last version whose version number is not representative of the version of lein it is compatible with.
+
+Enhancements
+----
+* \#2: Clarified Readme.
+
+Bug Fixes
+----
+none
+
 From 0.1.0 to 0.1.1
 ====
 0.1.1 release code enhancements and bug fixes provided by @hugoduncan.(Many Thanks)

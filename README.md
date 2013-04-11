@@ -16,13 +16,17 @@ myproject
 
 From a packaging and deploy perspective, the same command should be used across all subprojects to 'package' the artifacts, allowing each subproject make the appropriate jar, war, or whatever.  lein-package looks to satisfy the use cases that require multiple artifact generation and managment, including or excluding JARs.
 
+## Lein Version Compatibility
+For details on compatibility with lein versions, see the [Compatibility](/COMPATIBILITY.md/) document. 
+
 ## Usage
 
 ### Configure
 To use add the plugin to your project.
 
+Lein 2.0
 ```clojure
-  :plugins [[lein-package "0.1.1"]]
+  :plugins [[lein-package "0.1.2"]]
 ```
 
 Add hooks if you want the configured artifacts to be installed or deployed.

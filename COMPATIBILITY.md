@@ -8,7 +8,8 @@
 	</thead>
 	<tbody>
 		<tr>
-			<td>2.0</td><td>0.1.2</td>
+			<td>2.0</td><td>2.0.0</td>
+			<td>2.1</td><td>2.1.0</td>
 		</tr>
 	</tbody>
 </table>
@@ -44,4 +45,4 @@ As an example, if the latest build of lein-package is build 33, lein will have c
 
 
 # Version Deprecation.
-No more than the latest 3 minor versions of leiningen will be maintained, with the earliest version being 2.0 (Sorry, lein 1.0 users).
+No more than 3 branches of lein-package will be maintaine, representing the latest 3 minor versions of leiningen, with the earliest version being 2.0 (Sorry, lein 1.0 users).

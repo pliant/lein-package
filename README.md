@@ -26,7 +26,12 @@ To use add the plugin to your project.
 
 Lein 2.0
 ```clojure
-  :plugins [[lein-package "0.1.2"]]
+  :plugins [[lein-package "2.0.0"]]
+```
+
+Lein 2.1
+```clojure
+  :plugins [[lein-package "2.1.0"]]
 ```
 
 Add hooks if you want the configured artifacts to be installed or deployed.
@@ -59,4 +64,4 @@ lein package
 ```
 
 ### Install & Deploying
-Installing and deploying packages are performed automatically with the normal lein install and lein deploy commands as long as the hooks have been configured.
+Installing and deploying packages are performed automatically with the normal lein install and lein deploy commands as long as the hooks have been configured.  In order to include the packaged artifacts into these lifecycles, the ``:autobuild`` property must be set to true or the ``package`` task must be included in the call, such as ``lein do package, install`` or ``lein do package, deploy myrepo``.  Setting ``:autobuild`` to false allows for the installing deploying of only JARS yet being able to package other artifacts locally.

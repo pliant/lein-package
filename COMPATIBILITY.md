@@ -9,6 +9,7 @@
 	<tbody>
 		<tr>
 			<td>2.0</td><td>2.0.0</td>
+		</tr><tr>
 			<td>2.1</td><td>2.1.0</td>
 		</tr>
 	</tbody>

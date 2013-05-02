@@ -38,7 +38,9 @@
     (if raw-artifacts
       (let [configured (for [entry raw-artifacts] (artifactify entry))
             pomjar #{"pom" "jar"}]
-        (filter #(or (not (:classifier %)) (not (pomjar (:extension %)))) configured)))))
+        (filter #(or (and (:classifier %)
+                          (not= "pom" (:extension %)))
+                     (not (pomjar (:extension %)))) configured)))))
 
 (defn make-jar?
   [project]

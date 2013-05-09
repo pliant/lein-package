@@ -3,10 +3,12 @@
   (:require [clojure.java.io :as io]
             [clojure.string :as twine]
             [leiningen.core.main :as main]
-            [leiningen.jar :as jar]))
+            [leiningen.jar :as jar]
+            [leiningen.pom :as pom]))
 
-(def jar {:extension "jar" :build "jar"})
-(def pom {:extension "pom" })
+(def jar {:extension "jar"})
+(def buildable-jar {:extension "jar" :build "jar"})
+(def pom {:extension "pom"})
 
 
 (defn ^java.io.File file
@@ -38,7 +40,9 @@
     (if raw-artifacts
       (let [configured (for [entry raw-artifacts] (artifactify entry))
             pomjar #{"pom" "jar"}]
-        (filter #(or (not (:classifier %)) (not (pomjar (:extension %)))) configured)))))
+        (filter 
+          #(not (pomjar (:extension %)))
+          configured)))))
 
 (defn make-jar?
   [project]
@@ -51,7 +55,7 @@
 
 (defn buildable-artifacts
   [project]
-  (if (make-jar? project) (cons jar (artifacts project)) (artifacts project)))
+  (if (make-jar? project) (cons buildable-jar (artifacts project)) (artifacts project)))
 
 (defn all-artifacts
   [project]
@@ -84,5 +88,26 @@
   ([project] [(symbol (:group project) (:name project)) (:version project)])
   ([project artifact & [suffix]]
     (let [extension (str (:extension artifact) suffix)
-          classifier (if (:classifier artifact) [:classifier (:classifier artifact)])]
-    (vec (concat [(symbol (:group project) (:name project)) (:version project) :extension extension] classifier)))))
+          classifier (if (:classifier artifact) 
+                       [:classifier (:classifier artifact)])]
+    (vec 
+      (concat 
+        [(symbol (:group project) (:name project)) 
+         (:version project) 
+         :extension extension] 
+        classifier)))))
+
+(defn mappings
+  [project] 
+  (let [pom-file (pom/pom project)
+        pom-coord (coordinates project pom)
+        pom-entry {:artifact pom :coordinate pom-coord :file pom-file}]
+    (if (make-jar? project)
+      (let [jar-file-name (make-jar project)
+            jar-entry {:artifact jar :coordinate (coordinates project jar) :file jar-file-name}]
+        (list jar-entry pom-entry))
+      (list pom-entry))))
+
+(defn mappings->entries
+  [coll]
+  (into {} (map (fn [m] [(:coordinate m) (:file m)]) coll)))

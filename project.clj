@@ -1,4 +1,4 @@
-(defproject lein-package "2.0.0"
+(defproject lein-package "2.0.1"
   :description "Leiningen Package Plugin."
   :url "https://github.com/pliant/lein-package"
   :license {:name "Eclipse Public License"

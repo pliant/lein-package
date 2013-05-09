@@ -14,21 +14,20 @@
     (if artifacts
       (do
         (package/clean project)
-        (let [jar-file (artifact/make-jar project)
-              pom-file (pom/pom project)
-              jar-coord (artifact/coordinates project)
-              pom-coord (artifact/coordinates project artifact/pom)
-              base-coords (if jar-file 
-                            [jar-coord pom-coord] 
-                            [pom-coord])
-              base-files (if jar-file 
-                           {jar-coord jar-file pom-coord pom-file} 
-                           {pom-coord pom-file})
+        (let [base-mappings (artifact/mappings project)
+              base-entries (artifact/mappings->entries base-mappings)
               built-artifacts (artifact/built-artifacts project)
-              arts (concat base-coords 
-                           (for [artifact built-artifacts] (artifact/coordinates project artifact)))
-              files (into base-files 
-                          (for [artifact built-artifacts] [(artifact/coordinates project artifact) (artifact/file-path project artifact)]))]
+              arts (concat (into [] (map #(:coordinate %) base-mappings))
+                           (for [artifact built-artifacts] 
+                             (artifact/coordinates project artifact)))
+              files (into base-entries
+                          (for [artifact built-artifacts] 
+                            [(artifact/coordinates project artifact)
+                             (artifact/file-path project artifact)]))]
+          (println "Base-Mappings: " base-mappings)
+          (println "Built-Artifacts: " built-artifacts)
+          (println "Artifacts: " arts)
+          (println "Files: " files)
           (aether/install-artifacts :artifacts arts :files files)))
       (f project))))
 

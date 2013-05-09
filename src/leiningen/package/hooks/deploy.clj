@@ -17,29 +17,21 @@
     (if artifacts
       (do
         (package/clean project)
-        (let [jar-file (artifact/make-jar project)
-              pom-file (pom/pom project)
-              jar-coord (artifact/coordinates project artifact/jar)
-              pom-coord (artifact/coordinates project artifact/pom)
+        (let [base-mappings (artifact/mappings project)
+              base-entries (artifact/mappings->entries base-mappings)
               built-artifacts (artifact/built-artifacts project)
-              
-              base-entries (if jar-file
-                             {pom-coord pom-file jar-coord jar-file}
-                             {pom-coord pom-file})
               entries (into base-entries
                             (for [artifact built-artifacts]
                               [(artifact/coordinates project artifact) (artifact/file-path project artifact)]))
-              
-              base-signed (if (sign? project repo) 
-                            (if jar-file
-                              {(artifact/coordinates project artifact/pom ".asc") (leiningen.deploy/sign pom-file)
-                               (artifact/coordinates project artifact/jar ".asc") (leiningen.deploy/sign jar-file)}
-                              {(artifact/coordinates project artifact/pom ".asc") (leiningen.deploy/sign pom-file)}))
+              base-signed (if (sign? project repo)
+                            (into {} (map (fn [m] [(artifact/coordinates project (:artifact m) ".asc")
+                                                   (leiningen.deploy/sign (:file m))]) base-mappings)))
               signed (if base-signed
                        (into base-signed
                              (for [artifact built-artifacts]
                                [(artifact/coordinates project artifact ".asc") 
-                                (leiningen.deploy/sign (artifact/file-path project artifact))])))]
+                                (leiningen.deploy/sign 
+                                  (artifact/file-path project artifact))])))]
           (merge entries signed)))
       (f project repo))))
 

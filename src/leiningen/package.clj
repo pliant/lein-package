@@ -31,7 +31,7 @@
   [project & extensions]
   (let [artifacts (artifact/buildable-artifacts project)
         buildable (if (> (count extensions) 0) (lessen extensions artifacts) artifacts)]
-    (if (> (count buildable) 0)
+   (if (> (count buildable) 0)
       (do
         (clean project)
         (artifact/build-artifacts project buildable)))))

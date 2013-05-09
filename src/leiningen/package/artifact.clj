@@ -6,8 +6,7 @@
             [leiningen.jar :as jar]
             [leiningen.pom :as pom]))
 
-(def jar {:extension "jar"})
-(def buildable-jar {:extension "jar" :build "jar"})
+(def jar {:extension "jar" :build "jar"})
 (def pom {:extension "pom"})
 
 
@@ -41,7 +40,9 @@
       (let [configured (for [entry raw-artifacts] (artifactify entry))
             pomjar #{"pom" "jar"}]
         (filter 
-          #(not (pomjar (:extension %)))
+          #(or (not (pomjar (:extension %)))
+               (and (:classifier %)
+                    (= "jar" (:extension %))))
           configured)))))
 
 (defn make-jar?
@@ -55,7 +56,7 @@
 
 (defn buildable-artifacts
   [project]
-  (if (make-jar? project) (cons buildable-jar (artifacts project)) (artifacts project)))
+  (if (make-jar? project) (cons jar (artifacts project)) (artifacts project)))
 
 (defn all-artifacts
   [project]
@@ -66,7 +67,7 @@
   (let [raw-args (twine/split (:build artifact) #"\s+")
         task-name (first raw-args)
         args (next raw-args)]
-    (main/apply-task task-name project args)))
+    (main/apply-task (main/lookup-alias task-name project) project args)))
 
 (defn build-artifacts
   [project artifacts]

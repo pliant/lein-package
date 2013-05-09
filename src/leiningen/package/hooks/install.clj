@@ -24,10 +24,6 @@
                           (for [artifact built-artifacts] 
                             [(artifact/coordinates project artifact)
                              (artifact/file-path project artifact)]))]
-          (println "Base-Mappings: " base-mappings)
-          (println "Built-Artifacts: " built-artifacts)
-          (println "Artifacts: " arts)
-          (println "Files: " files)
           (aether/install-artifacts :artifacts arts :files files)))
       (f project))))
 

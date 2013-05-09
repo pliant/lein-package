@@ -38,7 +38,9 @@
     (if raw-artifacts
       (let [configured (for [entry raw-artifacts] (artifactify entry))
             pomjar #{"pom" "jar"}]
-        (filter #(or (not (:classifier %)) (not (pomjar (:extension %)))) configured)))))
+        (filter #(or (and (:classifier %)
+                          (not= "pom" (:extension %)))
+                     (not (pomjar (:extension %)))) configured)))))
 
 (defn make-jar?
   [project]
@@ -62,7 +64,7 @@
   (let [raw-args (twine/split (:build artifact) #"\s+")
         task-name (first raw-args)
         args (next raw-args)]
-    (main/apply-task task-name project args)))
+    (main/apply-task (main/lookup-alias task-name project) project args)))
 
 (defn build-artifacts
   [project artifacts]

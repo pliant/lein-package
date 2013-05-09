@@ -26,12 +26,12 @@ To use add the plugin to your project.
 
 Lein 2.0
 ```clojure
-  :plugins [[lein-package "2.0.0"]]
+  :plugins [[lein-package "2.0.1"]]
 ```
 
 Lein 2.1
 ```clojure
-  :plugins [[lein-package "2.1.0"]]
+  :plugins [[lein-package "2.1.1"]]
 ```
 
 Add hooks if you want the configured artifacts to be installed or deployed.

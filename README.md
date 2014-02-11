@@ -52,6 +52,8 @@ Configuring what packages are built, deployed, and installed.
            :artifacts [ ;; Collection of artifacts to build/package/install/deploy
              {:build "war" ;; Lein command used to build the artifact. e.g ring war, 
                            ;; ring uberwar, war, assemble
+              :classifier "standalone" ;; Optional classifier for the artifact,
+                                       ;; Use "standalone" for uberwar/uberjar
               :extension "war" ;; The extension/suffix that the artifact file can be 
                                ;; identified by. (:todo regex)}]}
 ```
